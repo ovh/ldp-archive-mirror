@@ -119,8 +119,7 @@ class CloudArchive:
         """
         to_download = self.local_db.db_archive_to_download()
         if to_download:
-            archive_id, sha256, md5, filename, size, stream_id, \
-            service = to_download
+            archive_id, sha256, filename, stream_id, service = to_download
             if not self.busy and not self.local_fs. \
                     fs_archive_exists(stream_id, filename):
                 self.pca_download(

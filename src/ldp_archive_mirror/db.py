@@ -115,7 +115,7 @@ class LocalDB:
         """
         parameters = (datetime.now(timezone.utc),)
         sql = """SELECT archiveId, sha256, filename, streamId, service FROM
-        archives WHERE available > ? and status='todo'
+        archives WHERE available < ? and status='todo'
         ORDER BY archiveId DESC LIMIT 1"""
         return self.exec_sql(sql=sql, parameters=parameters, fetch="one")
 
