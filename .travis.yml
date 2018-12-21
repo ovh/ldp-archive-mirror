@@ -1,0 +1,15 @@
+language: python
+python:
+- '3.6'
+install:
+  - pip install .
+script:
+- python setup.py test
+deploy:
+  provider: pypi
+  user: pdepaepe
+  password:
+    secure: uDD/AAvkC4lrB4ux6Sgr+jkDJ5x+76J25HrD6miZE7Y9Q3JeKQcydHn1fITC7bswXOz4kzc2FGPMJpenM2KoEHW6rv86Z28RPUpWNjX2LOFTQZX7VeYLXHQZg0pvLa+e4e8DCpnZanOl+AiyEugFWeisEOyvXvRthzbU+DEtNd97AOE3tiVgPqzlzx4/T/P6zKmtZLc1BZ/vtkpx/2l0b16VszbCAIILstbiZaVFC82XZD5I4jOrii+fy/+KQuiBy+cVSTk6jt8+hRAy6N33NXGR3ifUwpCYHonxu3GxBaOjUMflR7xnf8HaQjsE07bIItkOe2K0LKGa6QXxJhzPpOYFFC2JtDm7a9tEeHkP+RQiKHTHvGg8QFexEKp8ZrQO/4HIRdowU1syVpChVUfCFg5atTdlAlQgupERPLSbWbBfbuU+kAjqAzMXSTkqDzqOrT/57vuwmQDq5N1rI34Lb/sGs1nngCoq6zR0kyCZOuOMwlZeycFL7YU2glPOvoLlxEO9UUoVA5Qd1tW5IOVm5NDa1Mfdx3IVJhvPt/Q9IxHM7vpLiw+9CAbO4mNqvPrLz6JtQSNWG41lcWYkr6n7Mka0UgakxFP09tEYQrF0mzirOteyynhsw04jW1KbX7kQ3MqjB1r2HaVabcyyl9pRdyEuhCYYG5ngnakiZi1bkiU=
+  on:
+    tags: true
+    repo: pdepaepe/ldp-archive-mirror

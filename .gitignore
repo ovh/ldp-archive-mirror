@@ -1,0 +1,9 @@
+.idea
+/.eggs/
+/dist/
+/src/*.egg-info/
+__pycache__
+db
+mirror
+test.sh
+/docker/*.tar.gz
