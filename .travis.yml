@@ -2,14 +2,14 @@ language: python
 python:
 - '3.6'
 install:
-  - pip install .
+- pip install .
 script:
 - python setup.py test
 deploy:
   provider: pypi
   user: pdepaepe
   password:
-    secure: uDD/AAvkC4lrB4ux6Sgr+jkDJ5x+76J25HrD6miZE7Y9Q3JeKQcydHn1fITC7bswXOz4kzc2FGPMJpenM2KoEHW6rv86Z28RPUpWNjX2LOFTQZX7VeYLXHQZg0pvLa+e4e8DCpnZanOl+AiyEugFWeisEOyvXvRthzbU+DEtNd97AOE3tiVgPqzlzx4/T/P6zKmtZLc1BZ/vtkpx/2l0b16VszbCAIILstbiZaVFC82XZD5I4jOrii+fy/+KQuiBy+cVSTk6jt8+hRAy6N33NXGR3ifUwpCYHonxu3GxBaOjUMflR7xnf8HaQjsE07bIItkOe2K0LKGa6QXxJhzPpOYFFC2JtDm7a9tEeHkP+RQiKHTHvGg8QFexEKp8ZrQO/4HIRdowU1syVpChVUfCFg5atTdlAlQgupERPLSbWbBfbuU+kAjqAzMXSTkqDzqOrT/57vuwmQDq5N1rI34Lb/sGs1nngCoq6zR0kyCZOuOMwlZeycFL7YU2glPOvoLlxEO9UUoVA5Qd1tW5IOVm5NDa1Mfdx3IVJhvPt/Q9IxHM7vpLiw+9CAbO4mNqvPrLz6JtQSNWG41lcWYkr6n7Mka0UgakxFP09tEYQrF0mzirOteyynhsw04jW1KbX7kQ3MqjB1r2HaVabcyyl9pRdyEuhCYYG5ngnakiZi1bkiU=
+    secure: jtHB2pqwI7ybEQx/r4n7Gl7uhJ1kbM+8EyNbIodd3aAUJWl+ncVD7hDkYykP3pxyQK73PPk+tlo+D3II6p9vNWW3GZZIKtmssvNM8gkTP0l7ROcegUrRiygA5fxlI2vpbq5g/9+lAejKczGvadJBj/x8qE3ZH93Vy1LfYDQ4QA+V3z030cELgPwXS22OB88Ca/Cb588BJiGqUyZlyw62pHRpu+aMrE8f7HBaUu/ePJNrMmnSJ1sah+KLtumpfAdhBRBzLNiUnHlWIRmMgct2Z2+buAJrS1XEtDEVZ6MYEfxE4Oa426qI5Rg1v/l4Az/Rd+h6V5bSBwHYz9LYw5mRMnNsZI2akVVZ/lW5hogiYHhihc1CSIp8/e7ItI3IoiQFOT0y94ONTUwatgYY5qJpOnX9PkaHDYpi2mzT+Xi43LeifJLhuBWt6wADrJqlWEEcE+zEbH+zh36nbpiPz9+xyv7F4r/lUAfyTynfaNmftQm4kKWUuW3OQUzUwEq6bN49BBLQiOqtXoyXSCO3VHG32yix9XjeqLdnH56ANYQlZ4bN471e7MB9bKK0d+1CMoYGxeYAloemncSyo3SOeuBxvhCgs8B2A3+MLYt54WemitKw2+srSC4hS0gGdN0f6gdclMnc/XBswU1seFXExVlHTlEEnQmBllc2zXBNZYZnk00=
   on:
     tags: true
-    repo: pdepaepe/ldp-archive-mirror
+    repo: ovh/ldp-archive-mirror

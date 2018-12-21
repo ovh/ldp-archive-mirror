@@ -118,14 +118,14 @@ Default cli values can be set using environment:
 ============================  ====================  ============================================================================
 Cli parameter                 Name                  About
 ============================  ====================  ============================================================================
---app-key                     `OVH_API_AK`          OVH application key
---app-secret                  `OVH_API_AS`          OVH application secret
---consumer-key                `OVH_API_CK`          OVH customer key
---ovh-region                  `OVH_API_REGION`      OVH api location. Default: *ovh-eu*
---db                          `DB_DIRECTORY`        Where to place the local sqlite database. Default: *db*
---mirror                      `MIRROR_DIRECTORY`    Where to place your archives. Default: *mirror*
---ldp-host                    `LDP_HOST`            If set, push logs of the current application to given LDP hostname
---ldp-token                   `LDP_TOKEN`           If set, push logs of the current application to associated LDP stream token
+--app-key                     OVH_API_AK            OVH application key
+--app-secret                  OVH_API_AS            OVH application secret
+--consumer-key                OVH_API_CK            OVH customer key
+--ovh-region                  OVH_API_REGION        OVH api location. Default: *ovh-eu*
+--db                          DB_DIRECTORY          Where to place the local sqlite database. Default: *db*
+--mirror                      MIRROR_DIRECTORY      Where to place your archives. Default: *mirror*
+--ldp-host                    LDP_HOST              If set, push logs of the current application to given LDP hostname
+--ldp-token                   LDP_TOKEN             If set, push logs of the current application to associated LDP stream token
 ============================  ====================  ============================================================================
 
 
@@ -138,7 +138,7 @@ Once all the mandatory environment variables set, launch the process like this::
 
 This will:
 
-- looks for the LDP service associated with the given `STREAM_ID`(s)
+- looks for the LDP service associated with the given **STREAM_ID** (s)
 - populate a local cache with all the archives found on the API
 - request for each of them a temporary download url
 - download the files when unseal time is reached
@@ -175,4 +175,4 @@ Project Links
 License
 =======
 
-`OVH SAS <./LICENSE>`_
+`OVH SAS <https://github.com/ovh/ldp-archive-mirror/blob/master/LICENSE>`_
