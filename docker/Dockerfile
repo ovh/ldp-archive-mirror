@@ -10,10 +10,11 @@ VOLUME "${MIRROR_DIRECTORY}"
 
 # ldp-archive-mirror install
 COPY ldp-archive-mirror-*.tar.gz /tmp
-RUN pip install /tmp/ldp-archive-mirror-*.tar.gz
+RUN pip3 install /tmp/ldp-archive-mirror-*.tar.gz
 
 # cleaning
 RUN rm -f /tmp/get-pip.py /tmp/ldp-archive-mirror-*.tar.gz
 
 # process
-ENTRYPOINT "/usr/local/bin/ldp-mirror"
+ENTRYPOINT ["/usr/local/bin/ldp-mirror"]
+CMD ["exec", "$@"]

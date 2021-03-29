@@ -36,7 +36,7 @@ Quickstart
 
 First, install **ldp-archive-mirror** using `pip <https://pip.pypa.io/en/stable/>`_::
 
-    pip install -U ldp-archive-mirror
+    pip3 install -U ldp-archive-mirror
 
 Then you can use the binary `ldp-mirror`::
 
@@ -81,6 +81,8 @@ to register your application. Depending the API you plan to use, visit:
 - `Kimsufi Europe <https://eu.api.kimsufi.com/createApp/>`_
 - `Kimsufi North America <https://ca.api.kimsufi.com/createApp/>`_
 
+You will get 2 keys, **Application Key** and **Application Secret**.
+
 On the restriction step, we invite you to set the following access rules::
 
     curl -XPOST -H"X-Ovh-Application: OVH_API_AK" -H "Content-type: application/json" \
@@ -106,9 +108,15 @@ On the restriction step, we invite you to set the following access rules::
         "redirection":"https://www.mywebsite.com/"
     }'
 
+Replace `OVH_API_AK` by your **Application Key**.
 
-Once created, you will obtain an **application key (OVH_API_AK)** and an **application
-secret (OVH_API_AS)**.
+In the curl response, you will have a validation URL `validationUrl` and a **Consumer Key** `consumerKey`.
+Please follow the link `validationUrl` and connect your OVH account (use unlimited lifespan).
+Once the user has been authenticated, it will be automatically redirected to the URL you entered when the token was created
+(*https://www.mywebsite.com/* in the previous example).
+
+Once created, you will obtain an **application key (OVH_API_AK)**, an **application
+secret (OVH_API_AS)** and a **consumer key (OVH_API_CK)**
 
 2. Environment variables
 ------------------------
@@ -157,14 +165,16 @@ To build the image form the sources, uses the given `Makefile`::
 
 And to run it::
 
-    $ docker run -v /my_backup/mirror/:/data/mirror -v /my_backup/db:/data/db \
+    $ docker run -v -t /my_backup/mirror/:/data/mirror -v /my_backup/db:/data/db \
     -e OVH_API_AK=MY_OVH_AK -e OVH_API_AS=MY_OVH_AS -e OVH_API_CK=MY_OVH_CK \
-    -t MY_LDP_STREAM_ID_1 MY_LDP_STREAM_ID_2
+    ldp-archive-mirror --ldp-host graX.logs.ovh.com MY_LDP_STREAM_ID_1 MY_LDP_STREAM_ID_2
+
+Replace `graX.logs.ovh.com` by your LDP cluster address, `MY_LDP_STREAM_ID_1`/`MY_LDP_STREAM_ID_2`/... by your LDP stream id.
 
 Requirements
 ============
 
-- Python >= 3.3
+- Python >= 3.6
 
 Project Links
 =============
