@@ -1,2 +1,4 @@
-ovh==0.4.5
+ovh==0.5.0
 djehouty==0.1.5
+schedule==1.0
+requests==2.25.1

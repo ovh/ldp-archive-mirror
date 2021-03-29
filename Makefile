@@ -3,7 +3,7 @@ help:
 
 dist-src:
 	@rm -f docker/ldp-archive-mirror-*.tar.gz
-	@python setup.py sdist -d docker
+	@python3 setup.py sdist -d docker
 
 build-docker: dist-src
 	@docker build -t ldp-archive-mirror docker
