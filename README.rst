@@ -43,6 +43,7 @@ Then you can use the binary `ldp-mirror`::
     usage: ldp-mirror [-h] [--app-key KEY] [--app-secret SECRET]
                   [--consumer-key KEY] [--ovh-region REGION] [--db DIR]
                   [--mirror DIR] [--ldp-host HOST] [--ldp-token TOKEN]
+                  [--chunk-size CHUNK]
                   STREAM_ID [STREAM_ID ...]
 
     LDP archive Mirror CLI - 0.1.0
@@ -62,6 +63,7 @@ Then you can use the binary `ldp-mirror`::
                            LDP hostname
       --ldp-token TOKEN    If set, push logs of the current application to
                            associated LDP stream token
+      --chunk-size CHUNK   Download chunk size in bytes (default: 16384)
 
 Setup
 =====
@@ -134,6 +136,7 @@ Cli parameter                 Name                  About
 --mirror                      MIRROR_DIRECTORY      Where to place your archives. Default: *mirror*
 --ldp-host                    LDP_HOST              If set, push logs of the current application to given LDP hostname
 --ldp-token                   LDP_TOKEN             If set, push logs of the current application to associated LDP stream token
+--chunk-size                  CHUNK_SIZE            Download chunk size in bytes
 ============================  ====================  ============================================================================
 
 
