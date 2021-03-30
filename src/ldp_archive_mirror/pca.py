@@ -44,11 +44,12 @@ logger = logging.getLogger(__name__)
 
 
 class CloudArchive:
-    def __init__(self, local_db, local_fs, ovh_api):
+    def __init__(self, local_db, local_fs, ovh_api, chunk_size):
         self.busy = True
         self.local_db = local_db
         self.local_fs = local_fs
         self.ovh_api = ovh_api
+        self.chunk_size = chunk_size
         self.pca_init()
 
     def pca_init(self):
@@ -80,10 +81,12 @@ class CloudArchive:
         delta = None
         try:
             self.busy = True
-            with urllib.request.urlopen(url) \
-                    as response, open(archive_file_name, 'wb') as out_file:
-                data = response.read()
-                out_file.write(data)
+            response = urllib.request.urlopen(url)
+            with open(archive_file_name, 'wb') as out_file:
+                for chunk in iter(lambda: response.read(self.chunk_size), ''):
+                    if not chunk:
+                        break
+                    out_file.write(chunk)
             logger.info(
                 "Archive {} downloaded".format(archive_file_name)
             )
