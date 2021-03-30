@@ -78,6 +78,11 @@ PARSER.add_argument(
     help="If set, push logs of the current application to associated LDP stream token"
 )
 PARSER.add_argument(
+    "--chunk-size", default=int(os.getenv('CHUNK_SIZE', "16384")),
+    metavar="CHUNK_SIZE",
+    help="Download chunk size (default: %(default)s) bytes"
+)
+PARSER.add_argument(
     "stream", nargs="+", help="LDP Stream UUIDs", metavar="STREAM_ID"
 )
 
@@ -92,7 +97,8 @@ def main():
             db_directory=os.path.realpath(args.db), app_key=args.app_key,
             app_secret=args.app_secret, consumer_key=args.consumer_key,
             ovh_region=args.ovh_region, streams=args.stream,
-            mirror_directory=os.path.realpath(args.mirror)
+            mirror_directory=os.path.realpath(args.mirror),
+            chunk_size=args.chunk_size
         )
         schedule.every().hour.do(mirror.check_for_new_archive)
         schedule.every(1).minutes.do(mirror.attempt_to_download_again)

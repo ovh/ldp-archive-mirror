@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 class LDPMirror:
     def __init__(self, db_directory, app_key, app_secret, consumer_key,
-                 ovh_region, mirror_directory, streams):
+                 ovh_region, mirror_directory, streams, chunk_size):
         self.local_db = LocalDB(db_directory)
         self.ovh_api = OvhAPI(
             streams=streams, local_db=self.local_db, app_key=app_key,
@@ -55,7 +55,8 @@ class LDPMirror:
             mirror_directory=mirror_directory
         )
         self.pca = CloudArchive(
-            local_db=self.local_db, local_fs=self.local_fs, ovh_api=self.ovh_api
+            local_db=self.local_db, local_fs=self.local_fs,
+            ovh_api=self.ovh_api, chunk_size=chunk_size
         )
 
     def check_for_new_archive(self):
