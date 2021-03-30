@@ -79,8 +79,7 @@ PARSER.add_argument(
 )
 PARSER.add_argument(
     "--chunk-size", default=int(os.getenv('CHUNK_SIZE', "16384")),
-    metavar="CHUNK_SIZE",
-    help="Download chunk size (default: %(default)s) bytes"
+    metavar="CHUNK", help="Download chunk size in bytes (default: %(default)s)"
 )
 PARSER.add_argument(
     "stream", nargs="+", help="LDP Stream UUIDs", metavar="STREAM_ID"
