@@ -7,3 +7,5 @@ db
 mirror
 test.sh
 /docker/*.tar.gz
+.python-version
+.vscode

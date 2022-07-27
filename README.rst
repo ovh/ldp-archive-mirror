@@ -38,32 +38,31 @@ First, install **ldp-archive-mirror** using `pip <https://pip.pypa.io/en/stable/
 
     pip3 install -U ldp-archive-mirror
 
-Then you can use the binary `ldp-mirror`::
+Then you can use the binary ``ldp-mirror``::
 
     usage: ldp-mirror [-h] [--app-key KEY] [--app-secret SECRET]
                   [--consumer-key KEY] [--ovh-region REGION] [--db DIR]
                   [--mirror DIR] [--ldp-host HOST] [--ldp-token TOKEN]
-                  [--chunk-size CHUNK]
+                  [--chunk-size CHUNK] [--gpg-passphrase SECRET]
                   STREAM_ID [STREAM_ID ...]
 
-    LDP archive Mirror CLI - 0.1.0
+    LDP archive Mirror CLI - 0.2.0
 
     positional arguments:
       STREAM_ID            LDP Stream UUIDs
 
     optional arguments:
-      -h, --help           show this help message and exit
-      --app-key KEY        OVH application key (default: None)
-      --app-secret SECRET  OVH application secret (default: None)
-      --consumer-key KEY   OVH consumer key (default: None)
-      --ovh-region REGION  OVH region (default: ovh-eu)
-      --db DIR             Where to place the local sqlite database (default: db)
-      --mirror DIR         Where to place your archives (default: mirror)
-      --ldp-host HOST      If set, push logs of the current application to given
-                           LDP hostname
-      --ldp-token TOKEN    If set, push logs of the current application to
-                           associated LDP stream token
-      --chunk-size CHUNK   Download chunk size in bytes (default: 16384)
+      -h, --help              show this help message and exit
+      --app-key KEY           OVH application key (default: dcd57be8c9dc53ff)
+      --app-secret SECRET     OVH application secret (default: d37f35c27e60be58746e81e3351a84db)
+      --consumer-key SECRET   OVH consumer key (default: 819fb70c64f91f797daf0ed3990e5ff0)
+      --ovh-region REGION     OVH region (default: ovh-eu)
+      --db DIR                Where to place the local sqlite database (default: /data/db)
+      --mirror DIR            Where to place your archives (default: /data/mirror)
+      --ldp-host HOST         If set, push logs of the current application to given LDP hostname
+      --ldp-token TOKEN       If set, push logs of the current application to associated LDP stream token
+      --chunk-size CHUNK      Download chunk size in bytes (default: 16384)
+      --gpg-passphrase SECRET PGP private key passphrase (default: None)
 
 Setup
 =====
@@ -72,7 +71,7 @@ Setup
 ------------------------
 
 To interact with the APIs, the application needs to identify itself using an
-`application_key` and an `application_secret`. To get them, you need
+``application_key`` and an ``application_secret``. To get them, you need
 to register your application. Depending the API you plan to use, visit:
 
 - `OVH Europe <https://eu.api.ovh.com/createApp/>`_
@@ -96,6 +95,10 @@ On the restriction step, we invite you to set the following access rules::
             },
             {
                 "method": "GET",
+                "path": "/dbaas/logs/*/encryptionKey/*"
+            },
+            {
+                "method": "GET",
                 "path": "/dbaas/logs/*/output/graylog/stream"
             },
             {
@@ -105,15 +108,19 @@ On the restriction step, we invite you to set the following access rules::
             {
                 "method": "POST",
                 "path": "/dbaas/logs/*/output/graylog/stream/*/archive/*/url"
+            },
+            {
+                "method": "GET",
+                "path": "/dbaas/logs/*/output/graylog/stream/*/archive/*/encryptionKey"
             }
         ],
         "redirection":"https://www.mywebsite.com/"
     }'
 
-Replace `OVH_API_AK` by your **Application Key**.
+Replace ``OVH_API_AK`` by your **Application Key**.
 
-In the curl response, you will have a validation URL `validationUrl` and a **Consumer Key** `consumerKey`.
-Please follow the link `validationUrl` and connect your OVH account (use unlimited lifespan).
+In the curl response, you will have a validation URL ``validationUrl`` and a **Consumer Key** ``consumerKey``.
+Please follow the link ``validationUrl`` and connect your OVH account (use unlimited lifespan).
 Once the user has been authenticated, it will be automatically redirected to the URL you entered when the token was created
 (*https://www.mywebsite.com/* in the previous example).
 
@@ -137,6 +144,7 @@ Cli parameter                 Name                  About
 --ldp-host                    LDP_HOST              If set, push logs of the current application to given LDP hostname
 --ldp-token                   LDP_TOKEN             If set, push logs of the current application to associated LDP stream token
 --chunk-size                  CHUNK_SIZE            Download chunk size in bytes
+--gpg-passphrase              GPG_PASSPHRASE        PGP private key passphrase
 ============================  ====================  ============================================================================
 
 
@@ -153,6 +161,7 @@ This will:
 - populate a local cache with all the archives found on the API
 - request for each of them a temporary download url
 - download the files when unseal time is reached
+- decrypt the archives if they are encrypted
 - ask every hour the api if a new archive is available
 
 Create docker image from sources
@@ -160,7 +169,7 @@ Create docker image from sources
 
 As this application is supposed to be kept alive indefinitely, launching it from a Docker daemon looks obvious.
 
-To build the image form the sources, uses the given `Makefile`::
+To build the image form the sources, uses the given ``Makefile``::
 
     $ git clone https://github.com/ovh/ldp-archive-mirror
     $ cd ldp-archive-mirror
@@ -168,11 +177,20 @@ To build the image form the sources, uses the given `Makefile`::
 
 And to run it::
 
-    $ docker run -v -t /my_backup/mirror/:/data/mirror -v /my_backup/db:/data/db \
-    -e OVH_API_AK=MY_OVH_AK -e OVH_API_AS=MY_OVH_AS -e OVH_API_CK=MY_OVH_CK \
-    ldp-archive-mirror --ldp-host graX.logs.ovh.com MY_LDP_STREAM_ID_1 MY_LDP_STREAM_ID_2
+    $ mkdir -p ~/ldp-archive-mirror/db ~/ldp-archive-mirror/mirror
+    $ docker run -d \
+        --name ldp-archive-mirror \
+        --user $(id -u):$(id -g) \
+        -v ${HOME}/ldp-archive-mirror/mirror/:/data/mirror \
+        -v ${HOME}/ldp-archive-mirror/db:/data/db \
+        -v ${HOME}/.gnupg:/data/gnupg \
+        -e OVH_API_AK=MY_OVH_AK \
+        -e OVH_API_AS=MY_OVH_AS \
+        -e OVH_API_CK=MY_OVH_CK \
+        -e GPG_PASSPHRASE=MY_GPG_PRIVATE_KEY_PASSPHRASE \
+        ldp-archive-mirror --ldp-host graX.logs.ovh.com MY_LDP_STREAM_ID_1 MY_LDP_STREAM_ID_2
 
-Replace `graX.logs.ovh.com` by your LDP cluster address, `MY_LDP_STREAM_ID_1`/`MY_LDP_STREAM_ID_2`/... by your LDP stream id.
+Replace ``graX.logs.ovh.com`` by your LDP cluster address, ``MY_LDP_STREAM_ID_1``/``MY_LDP_STREAM_ID_2``/... by your LDP stream id.
 
 Requirements
 ============
