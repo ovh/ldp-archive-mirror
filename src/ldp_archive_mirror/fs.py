@@ -32,20 +32,21 @@
 
 
 """
+import hashlib
 import logging
 import os
 from pathlib import Path
-import hashlib
 
 logger = logging.getLogger(__name__)
 
 
 class LocalFS:
-    def __init__(self, streams, local_db, mirror_directory='mirror'):
+    def __init__(self, streams, local_db, pgp, mirror_directory='mirror'):
         logger.debug("Mirror_directory: {}".format(mirror_directory))
         self.mirror_directory = mirror_directory
         self.streams = streams
         self.local_db = local_db
+        self.pgp = pgp
         self.fs_init()
         self.fs_sync()
 
@@ -102,6 +103,23 @@ class LocalFS:
         :rtype: str
         """
         return '{}/{}/{}'.format(self.mirror_directory, stream_id, archive_name)
+
+    def decrypt_fs_archive(self, archive_path) -> str:
+        """ Decrypt an archive
+        Create a new decrypted file, then remove the encrypted file
+
+        :param str archive_path: Archive path to decrypt
+        :return: The decrypted archive path
+        :rtype: str
+        """
+        decrypted_archive_path = Path(archive_path.split('.pgp')[0])
+        self.pgp.decrypt_file(
+            file_path=Path(archive_path),
+            output_path=Path(decrypted_archive_path)
+        )
+        logger.info(f"Archive {decrypted_archive_path} decrypted successfully")
+        os.remove(archive_path)
+        return decrypted_archive_path
 
     @staticmethod
     def get_sha256_checksum(filename, block_size=65536):

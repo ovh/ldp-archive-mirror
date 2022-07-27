@@ -82,6 +82,10 @@ PARSER.add_argument(
     metavar="CHUNK", help="Download chunk size in bytes (default: %(default)s)"
 )
 PARSER.add_argument(
+    "--gpg-passphrase", default=os.getenv('GPG_PASSPHRASE', None),
+    metavar="SECRET", help="PGP private key passphrase (default: %(default)s)"
+)
+PARSER.add_argument(
     "stream", nargs="+", help="LDP Stream UUIDs", metavar="STREAM_ID"
 )
 
@@ -97,7 +101,7 @@ def main():
             app_secret=args.app_secret, consumer_key=args.consumer_key,
             ovh_region=args.ovh_region, streams=args.stream,
             mirror_directory=os.path.realpath(args.mirror),
-            chunk_size=args.chunk_size
+            chunk_size=args.chunk_size, gpg_passphrase=args.gpg_passphrase
         )
         schedule.every().hour.do(mirror.check_for_new_archive)
         schedule.every(1).minutes.do(mirror.attempt_to_download_again)
