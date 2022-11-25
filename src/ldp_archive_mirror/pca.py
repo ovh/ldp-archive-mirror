@@ -39,6 +39,7 @@ import urllib.request
 
 from datetime import datetime, timezone, timedelta
 from urllib.error import HTTPError
+from ldp_archive_mirror.exceptions import ArchiveNotFound, UrlNotAvailable
 
 logger = logging.getLogger(__name__)
 
@@ -72,15 +73,16 @@ class CloudArchive:
         :param sha256 sha256: Archive sha256sum
         :param str archive_file_name: archive path
         """
-        url = self.ovh_api.api_get_archive_url(
-            service=service, stream_id=stream_id, archive_id=archive_id
-        )
-        if url is None:
-            return
         status = "todo"
         delta = None
         try:
             self.busy = True
+            self.ovh_api.api_archive_exists(
+                service=service, stream_id=stream_id, archive_id=archive_id
+            )
+            url = self.ovh_api.api_get_archive_url(
+                service=service, stream_id=stream_id, archive_id=archive_id
+            )
             response = urllib.request.urlopen(url)
             with open(archive_file_name, 'wb') as out_file:
                 for chunk in iter(lambda: response.read(self.chunk_size), ''):
@@ -99,6 +101,10 @@ class CloudArchive:
                 logger.warning(
                     "Sha256 ERROR on {}".format(archive_file_name)
                 )
+        except ArchiveNotFound as e:
+            status = "expired"
+        except UrlNotAvailable as e:
+            pass
         except HTTPError as e:
             logger.debug("HTTP error: {}".format(e))
             r = requests.get(url)
@@ -110,12 +116,13 @@ class CloudArchive:
                     )
                 )
                 delta = datetime.now(timezone.utc) + timedelta(0,
-                                                               retry_after)
+                                                            retry_after)
         finally:
             self.local_db.db_archive_update(
                 archive_id=archive_id, available=delta, status=status
             )
             self.busy = False
+        
 
     def pca_retry(self):
         """ Re-download archives

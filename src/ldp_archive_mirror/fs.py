@@ -59,7 +59,7 @@ class LocalFS:
                 logger.info("Directory {} created".format(stream_repository))
 
     def fs_sync(self):
-        """ Synchronize the fiel system with the local file system
+        """ Synchronize the file system with the local file system
         """
         for archive in self.local_db.db_all_archives():
             archive_id, sha256, filename, stream_id, service, status = archive
