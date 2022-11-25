@@ -79,7 +79,7 @@ class LocalDB:
         """
         return self.exec_sql(
             sql="""SELECT archiveId, sha256, filename, streamId, service,
-            status FROM archives""",
+            status FROM archives WHERE status != 'expired'""",
             fetch="all"
         )
 

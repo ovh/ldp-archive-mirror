@@ -35,7 +35,8 @@
 import logging
 import ovh
 import sys
-from ovh.exceptions import APIError
+from ovh.exceptions import APIError, ResourceNotFoundError
+from ldp_archive_mirror.exceptions import ArchiveNotFound, UrlNotAvailable
 
 logger = logging.getLogger(__name__)
 
@@ -116,6 +117,27 @@ class OvhAPI:
         except APIError as e:
             logger.warning("API error, will retry later: {}".format(e))
 
+    def api_archive_exists(self, service, stream_id, archive_id):
+        """  Check that archive still exists
+
+        :param str service: LDP service name
+        :param str stream_id: Stream UUID
+        :param str archive_id: Archive UUID
+        :return: Archive availability
+        :rtype: bool
+        """
+        try:
+            self.client.get(
+                '/dbaas/logs/{}/output/graylog/stream/{}/archive/{}'.format(
+                    service, stream_id, archive_id
+                )
+            )
+        except ResourceNotFoundError as e:
+            logger.debug("Archive is no more available: {}".format(e))
+            raise ArchiveNotFound(str(e))
+        except APIError as e:
+            logger.warning("API error, will retry later: {}".format(e))
+
     def api_get_archive_url(self, service, stream_id, archive_id):
         """ Get archive temporary URL
 
@@ -134,6 +156,7 @@ class OvhAPI:
             return archive_url['url']
         except APIError as e:
             logger.warning("API error, will retry later: {}".format(e))
+            raise UrlNotAvailable(e)
 
     def api_lookup_service(self, stream_ref):
         """ Find the given stream's service
