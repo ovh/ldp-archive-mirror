@@ -107,7 +107,7 @@ class CloudArchive:
             pass
         except HTTPError as e:
             logger.debug("HTTP error: {}".format(e))
-            r = requests.get(url)
+            r = requests.head(url)
             if r.status_code == 429 and 'Retry-After' in r.headers:
                 retry_after = int(r.headers['Retry-After'])
                 logger.info(

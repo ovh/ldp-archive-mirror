@@ -128,7 +128,7 @@ class LocalDB:
         """
         parameters = (archive['archiveId'], archive['sha256'], archive['md5'],
                       archive['filename'], archive['size'], stream_id,
-                      service, None, None)
+                      service, 'todo', None)
         sql = "INSERT INTO archives VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         self.exec_sql(sql=sql, parameters=parameters, commit=True)
 
@@ -145,6 +145,13 @@ class LocalDB:
             logger.info(
                 "Archive {} added to cache".format(archive['archiveId'])
             )
+
+    def db_fix_status(self):
+        """ Fix archive with invalid status
+        """
+        sql = """UPDATE archives SET status = 'todo'
+        WHERE status IS NULL"""
+        self.exec_sql(sql=sql, commit=True)
 
     def db_archive_update(self, archive_id, available, status):
         """ Update archive information in database

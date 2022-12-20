@@ -176,6 +176,7 @@ class OvhAPI:
     def api_update_cache(self):
         """ Update database cache
         """
+        self.local_db.db_fix_status()
         stored_archives = []
         for archive in self.local_db.db_all_archives():
             stored_archives.append(archive[0])
