@@ -33,26 +33,32 @@
 
 """
 import logging
+
+from ldp_archive_mirror.api import OvhAPI
 from ldp_archive_mirror.db import LocalDB
 from ldp_archive_mirror.fs import LocalFS
-from ldp_archive_mirror.api import OvhAPI
 from ldp_archive_mirror.pca import CloudArchive
+from ldp_archive_mirror.pgp import PgpDecryptor
 
 logger = logging.getLogger(__name__)
 
 
 class LDPMirror:
     def __init__(self, db_directory, app_key, app_secret, consumer_key,
-                 ovh_region, mirror_directory, streams, chunk_size):
+                 ovh_region, mirror_directory, streams, chunk_size,
+                 gpg_passphrase):
         self.local_db = LocalDB(db_directory)
         self.ovh_api = OvhAPI(
             streams=streams, local_db=self.local_db, app_key=app_key,
             app_secret=app_secret, consumer_key=consumer_key,
             ovh_region=ovh_region
         )
+        self.pgp = PgpDecryptor(
+            gpg_passphrase=gpg_passphrase
+        )
         self.local_fs = LocalFS(
             streams=streams, local_db=self.local_db,
-            mirror_directory=mirror_directory
+            mirror_directory=mirror_directory, pgp=self.pgp
         )
         self.pca = CloudArchive(
             local_db=self.local_db, local_fs=self.local_fs,

@@ -100,7 +100,7 @@ class OvhAPI:
             logger.warning("API error, will retry later: {}".format(e))
 
     def api_get_archive(self, service, stream_id, archive_id):
-        """  Get archive information
+        """ Get archive information
 
         :param str service: LDP service name
         :param str stream_id: Stream UUID
@@ -158,6 +158,42 @@ class OvhAPI:
             logger.warning("API error, will retry later: {}".format(e))
             raise UrlNotAvailable(e)
 
+    def api_get_archive_encryption_keys(self, service, stream_id, archive_id):
+        """ List encryption keys used to encrypt archive
+
+        :param str service: LDP service name
+        :param str stream_id: Stream UUID
+        :param str archive_id: Archive UUID
+        :return: Archive URL
+        :rtype: list(str)
+        """
+        try:
+            return self.client.get(
+                '/dbaas/logs/{}/output/graylog/stream/{}/archive/{}/encryptionKey'.format(
+                    service, stream_id, archive_id
+                )
+            )
+        except APIError as e:
+            logger.warning("API error, will retry later: {}".format(e))
+
+    def api_get_encryption_key(self, service, encryption_key_id):
+        """ Get encryption information
+
+        :param str service: LDP service name
+        :param str stream_id: Stream UUID
+        :param str encryption_key_id: Encryption key UUID
+        :return: Encryption key information
+        :rtype: dict
+        """
+        try:
+            return self.client.get(
+                '/dbaas/logs/{}/encryptionKey/{}'.format(
+                    service, encryption_key_id
+                )
+            )
+        except APIError as e:
+            logger.warning("API error, will retry later: {}".format(e))
+
     def api_lookup_service(self, stream_ref):
         """ Find the given stream's service
 
@@ -192,4 +228,6 @@ class OvhAPI:
                         archive = self.api_get_archive(
                             service, stream_id, archiveId
                         )
-                        self.local_db.db_archive_cache(archive, stream_id, service)
+                        self.local_db.db_archive_cache(
+                            archive, stream_id, service
+                        )

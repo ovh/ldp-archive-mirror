@@ -95,6 +95,21 @@ class CloudArchive:
             if self.local_fs.get_sha256_checksum(
                     archive_file_name) == sha256:
                 logger.info("Sha256 OK on {}".format(archive_file_name))
+
+                # decrypt archive if needed
+                if archive_file_name.endswith(".pgp"):
+                    try:
+                        self.local_fs.decrypt_fs_archive(archive_file_name)
+                    except RuntimeError as exc:
+                        logger.error(
+                            f"Error while decrypting {archive_file_name}: "
+                            f"\"{exc}\""
+                        )
+                        self.local_fs.pgp.display_archive_encryption_keys(
+                            api=self.ovh_api, service=service,
+                            stream_id=stream_id, archive_id=archive_id
+                        )
+
                 status = "done"
             else:
                 os.remove(archive_file_name)

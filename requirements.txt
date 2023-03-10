@@ -1,3 +1,4 @@
 ovh==1.0.0
 djehouty==0.1.5
 schedule==1.1.0
+python-gnupg==0.4.9
