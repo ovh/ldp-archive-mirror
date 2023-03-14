@@ -202,6 +202,8 @@ Project Links
 
 - PyPI: https://pypi.python.org/pypi/ldp-archive-mirror
 - Issues: https://github.com/ovh/ldp-archive-mirror/issues
+- LDP Cold storage: https://docs.ovh.com/gb/en/logs-data-platform/cold-storage/
+- LDP Archive encryption: https://docs.ovh.com/gb/en/logs-data-platform/cold-storage-encryption/ 
 
 License
 =======
