@@ -53,9 +53,9 @@ Then you can use the binary ``ldp-mirror``::
 
     optional arguments:
       -h, --help              show this help message and exit
-      --app-key KEY           OVH application key (default: dcd57be8c9dc53ff)
-      --app-secret SECRET     OVH application secret (default: d37f35c27e60be58746e81e3351a84db)
-      --consumer-key SECRET   OVH consumer key (default: 819fb70c64f91f797daf0ed3990e5ff0)
+      --app-key KEY           OVH application key (default: None)
+      --app-secret SECRET     OVH application secret (default: None)
+      --consumer-key SECRET   OVH consumer key (default: None)
       --ovh-region REGION     OVH region (default: ovh-eu)
       --db DIR                Where to place the local sqlite database (default: /data/db)
       --mirror DIR            Where to place your archives (default: /data/mirror)
